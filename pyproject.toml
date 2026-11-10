@@ -1,0 +1,9 @@
+[project]
+name = "speaker-separator"
+version = "0.2.0"
+description = "Build clean single-speaker TTS training audio from podcast episodes: Mistral Voxtral diarization + local lossless cutting"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "requests>=2.32",
+    "python-dotenv>=1.0",
+]
