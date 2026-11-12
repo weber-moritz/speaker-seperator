@@ -111,7 +111,9 @@ All `prep.py` flags pass through the wrapper, e.g.
   `.env`, or `export MISTRAL_API_KEY=...`.
 - **API errors / 429** — `prep.py` retries 4 times with backoff on its own.
 - **Want different filters?** `cut` re-runs on the cached transcript and costs
-  nothing: try `--min-seg`, `--max-seg`, `--gap`, `--pad`, `--overlap-tol`.
+  nothing: try `--min-seg`, `--max-seg`, `--gap`, `--pad`, `--overlap-tol`,
+  `--drop-questions`. Defaults are tuned for TTS data: segments >= 1 s are
+  kept, questions are kept, fragments < 2.5 s apart are glued into one block.
 - **Privacy note:** episode audio is uploaded to Mistral's API. Only use it
   with content you're comfortable sending there.
 

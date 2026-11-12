@@ -60,10 +60,10 @@ PRICE_PER_MIN = 0.003  # USD, voxtral-mini-latest (verify at link above)
 # ---- tuning ---------------------------------------------------------------
 MAX_SINGLE_MINUTES = 170  # API accepts up to ~3 h per request; chunk above this
 CHUNK_MINUTES = 150       # chunk length when chunking is needed
-MIN_SEG = 3.0             # drop segments shorter than this (seconds)
+MIN_SEG = 1.0             # drop segments shorter than this (seconds)
 MAX_SEG = 60.0            # drop segments longer than this (likely diarization slips)
 MAX_BLOCK = 120.0         # cap merged block length (seconds)
-GAP_MERGE = 1.5           # merge kept segments closer than this (seconds)
+GAP_MERGE = 2.5           # merge kept segments closer than this (seconds)
 PAD = 0.2                 # lead/tail padding around a cut (seconds)
 OVERLAP_TOL = 0.05        # min intersection that counts as overlap (seconds)
 NEIGHBOR_MARGIN = 0.05    # don't bleed into the other speaker's segment
@@ -205,7 +205,7 @@ def drop_reason(seg, others, args):
     if has_overlap(seg, others, args.overlap_tol):
         return "overlap"
     t = seg["text"].lower()
-    if seg["text"].rstrip(' ."\'…').endswith("?"):
+    if args.drop_questions and seg["text"].rstrip(' ."\'…').endswith("?"):
         return "question"
     if any(m in t for m in DROP_MARKERS):
         return "marker"
@@ -274,6 +274,8 @@ def cut_episode(src, outdir, args):
                 kept.append(s)
         spkdir = outdir / spk
         spkdir.mkdir(parents=True, exist_ok=True)
+        for old in spkdir.glob("block_*.wav"):  # drop stale blocks from previous runs
+            old.unlink()
         blocks = merge_blocks(kept, args)
         total = 0.0
         for i, b in enumerate(blocks, 1):
@@ -361,6 +363,8 @@ def add_common(p):
     p.add_argument("--pad", type=float, default=PAD,
                    help="padding around each cut (s)")
     p.add_argument("--overlap-tol", type=float, default=OVERLAP_TOL)
+    p.add_argument("--drop-questions", action="store_true",
+                   help="drop question segments (default: keep them)")
 
 
 def main():

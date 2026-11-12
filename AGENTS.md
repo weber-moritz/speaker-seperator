@@ -84,13 +84,13 @@ speaker (or delete the other folders).
 
 | flag | default | meaning |
 |---|---|---|
-| `--overlap-tol` | 0.05 s | intersection with another speaker's segment that counts as overlap |
-| `--min-seg` | 3.0 s | drop shorter segments |
+| `--min-seg` | 1.0 s | drop shorter segments |
 | `--max-seg` | 60.0 s | drop longer segments (diarization slips) |
-| `--gap` | 1.5 s | merge kept segments closer than this |
+| `--gap` | 2.5 s | merge kept segments closer than this |
 | `--max-block` | 120 s | cap merged block length |
 | `--pad` | 0.2 s | padding around each cut |
-| question filter | on | drop segments whose transcript text ends with "?" |
+| `--overlap-tol` | 0.05 s | intersection with another speaker's segment that counts as overlap |
+| question filter | off (questions kept) | pass `--drop-questions` to drop segments whose transcript ends with "?" |
 | marker filter | on | drop text containing `[laugh`, `[music`, `[crosstalk`, ... |
 
 Cuts are clipped so they never bleed into the other speaker's segment
